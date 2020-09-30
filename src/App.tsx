@@ -88,42 +88,6 @@ class App extends React.Component<IProps, IState> {
     //remove used question
     questionsTemp = questionsTemp.filter((value, index) => index !== currentIndex)
 
-    /*///ODTĄD WŁAŚCIWIE
-      let nextIndex: number = 0
-      let hasTrue: boolean = false;
-      let hasFalse: boolean = false;
-      let nextStatesList: string[] = this.state.statesList.filter((value, index) => index !== currentIndex)
-
-      ///TO DOPRACOWAĆ W CHUJ XD
-    if(questionsTemp.length > 1) {
-      //while(!(hasTrue && hasFalse)) {
-      for(let i = 0; i < 500; i++ ){
-        nextIndex = Math.floor(Math.random() * questionsTemp.length)
-        hasTrue = false;
-        hasFalse = false;
-
-        nextStatesList.forEach((listState, listIndex) => {
-          states.forEach((mainState, mainIndex) => {
-            if (listState === mainState.name) {
-              if (mainState[questionsTemp[nextIndex].quest] === true) {
-                hasTrue = true;
-              }
-              if (mainState[questionsTemp[nextIndex].quest] === false) {
-                hasFalse = true;
-              }
-              console.log(listState)
-              console.log(mainState)
-              console.log(hasTrue)
-              console.log(hasFalse)
-            }
-          })
-        })
-        if(hasTrue && hasFalse) break;
-
-      }
-    }
-      ///DOTĄD JESY CHUJOWO*/
-
     //generate next index
     this.setState(({
       questionIndex: Math.floor(Math.random() * questionsTemp.length)
