@@ -7,7 +7,7 @@ interface IQuestions {
 const questions: IQuestions[] = [
     {name: "Is landlocked?",
         quest: "isLandlocked"},
-    {name: "Is bordered by Canada?",
+    {name: "Is bordering Canada?",
         quest: "isBorderedByCanada"},
     {name: "Is the coast on the east side of U.S. (if landlocked choose \"NO\") ?",
         quest: "isEastCoast"},

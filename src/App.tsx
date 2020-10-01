@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import states from "./states";
 import questions from "./questions";
@@ -7,113 +7,94 @@ import './index.css';
 import TitlePage from "./titlePage";
 import EndPage from "./endPage";
 
-interface IProps {
-}
+const App = () => {
+  const [statesList, setStatesList] =
+      useState(states.map(value => (value.name)));
+  const [questionsList, setQuestionsList] =
+      useState(questions.map(value => ({name: value.name, quest: value.quest})))
+  const [questionIndex, setQuestionIndex]  =
+      useState(Math.floor(Math.random() * questionsList.length));
+  const [doNotKnowCounter, setDoNotKnowCounter] =
+      useState(0);
 
-interface IState {
-  statesList: string[];
-  questionIndex: number;
-  doNotKnowCounter: number;
-}
 
-let questionsTemp = questions.map(value => ({name: value.name, quest: value.quest}));
+  useEffect(() => {
 
-class App extends React.Component<IProps, IState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      statesList: states.map(value => (value.name)),
-      questionIndex: Math.floor(Math.random() * questions.length),
-      doNotKnowCounter: 0
-    };
-    this.handleAnswer = this.handleAnswer.bind(this);
-    this.handleStopButton = this.handleStopButton.bind(this)
-  }
+      console.log(statesList)
+      console.log(questionIndex)
+      //czy mogę zostawić tu tego leta? Czy tu też lepiej zmienić ?
+    //Chodzi o to, ze jeśli wrzucę go do consta modyfikowanego przy pomocy
+    //setState, to wtedy muszę go updatować w tym useEffect a to tworzy mi
+    //nieskończoną pętlę albo fakt, że ten if* odpala mi się dopiero przy
+    //następnej modyfikacji w zależności od tego czy wrzucę do go listy
+    //argumentów na który czuły jest useEffect
+      let output: string | HTMLElement = ""
 
-  componentDidUpdate() {
-    console.log(this.state.statesList)
-    let output: string | HTMLSpanElement= ""
+      if (statesList.length === 1) {
+        output = `I know!!! It's \r ${statesList[0]}`.toUpperCase();
+      } else if (doNotKnowCounter >= 3) {
+        output = "---IT SEEMS LIKE YOU DON'T REALLY KNOW YOUR STATE---"
+      } else if (questionsList.length === 0) {
+        output = "---QUESTIONS OUT OF STOCK---";
+      } else if (statesList.length === 0) {
+        output = "---THERE IS NO STATE THAT MATCHES YOUR ANSWERS---"
+      }
+      //*ten if
+      if (output !== "") {
+        ReactDOM.render(
+            <React.StrictMode>
+              <EndPage props={output} key={output} type={Element}/>
+            </React.StrictMode>,
+            document.getElementById('root'))
+      }
 
-    if(this.state.statesList.length === 1) {
-      output = `I know!!! It's \r ${this.state.statesList[0]}`.toUpperCase();
-    } else if (this.state.doNotKnowCounter >= 3) {
-      output = "---IT SEEMS LIKE YOU DON'T REALLY KNOW YOUR STATE---"
-    } else if (questionsTemp.length === 0) {
-      output = "---QUESTIONS OUT OF STOCK---";
-    } else if (this.state.statesList.length === 0) {
-      output = "---THERE IS NO STATE THAT MATCHES YOUR ANSWERS---"
-    }
+  }, [statesList, doNotKnowCounter,]);
 
-    if(output !== "") {
-      ReactDOM.render(
-        <React.StrictMode>
-          <EndPage props={output} key={output} type={Element}/>
-        </React.StrictMode>,
-        document.getElementById('root'))
-    }
-  }
 
-  componentWillUnmount() {
-    questionsTemp = questions.map(value => ({name: value.name, quest: value.quest}));
-    this.setState({
-      statesList: states.map(value => (value.name)),
-      questionIndex: Math.floor(Math.random() * questions.length),
-      doNotKnowCounter: 0
-    })
-  }
-
-  handleAnswer(event: any) {
-    let currentIndex: number = this.state.questionIndex;
-    let questionValue: string = questionsTemp[currentIndex].quest;
+  const handleAnswer = (event: React.MouseEvent<HTMLElement>) => {
+    //let currentIndex: number = questionIndex;
+    //let questionValue: string = questionsList[questionIndex].quest;
 
       //YES answer
-      if (event.target.value === "yes") {
-        this.setState(state => ({
-          statesList: state.statesList.filter((value) =>
-              states[states.findIndex(element => element.name === value)][questionValue]),
-        }))
+      if ((event.target as any).value === "yes") {
+        setStatesList(statesList.filter((value) =>
+            states[states.findIndex(element => element.name === value)]
+                [questionsList[questionIndex].quest]))
 
         //NO answer
-      } else if (event.target.value === "no") {
-        this.setState(state => ({
-          statesList: state.statesList.filter((value) =>
-              !states[states.findIndex(element => element.name === value)][questionValue]),
-        }))
+      } else if ((event.target as any).value === "no") {
+        setStatesList(statesList.filter((value) =>
+            !states[states.findIndex(element => element.name === value)]
+                [questionsList[questionIndex].quest]))
 
         //DON'T KNOW answer
       } else {
-        this.setState(state => ({doNotKnowCounter: state.doNotKnowCounter + 1}));
+        setDoNotKnowCounter(doNotKnowCounter + 1);
       }
 
     //remove used question
-    questionsTemp = questionsTemp.filter((value, index) => index !== currentIndex)
+    setQuestionsList(questionsList.filter((value, index) => index !== questionIndex))
 
     //generate next index
-    this.setState(({
-      questionIndex: Math.floor(Math.random() * questionsTemp.length)
-    }))
+    setQuestionIndex(Math.floor(Math.random() * (questionsList.length - 1)))
+
   }
 
-  handleStopButton() {
+  const handleStopButton = () => {
     ReactDOM.render(
-        <React.StrictMode>
-          <TitlePage />
-        </React.StrictMode>,
+        <TitlePage /> ,
         document.getElementById('root'))
   }
 
-  render() {
-
     return(
         <div className="content" id="mainApp-content">
-          <div id="quest-name">{questionsTemp.length > 0 ? questionsTemp[this.state.questionIndex].name : "----BRAK PYTAŃ---"}</div>
-          <button className ="answer-button" id="yes" value="yes" onClick={this.handleAnswer}>YES</button>
-          <button className ="answer-button" id="idk" value="idk" onClick={this.handleAnswer}>DON'T KNOW</button>
-          <button className ="answer-button" id="no" value="no" onClick={this.handleAnswer}>NO</button>
-          <button id="stop-button" onClick={this.handleStopButton}>Can we just stop? I don't want to play anymore..</button>
+          <div id="quest-name">{questionsList[questionIndex].name}</div>
+          <button className ="answer-button" id="yes" value="yes" onClick={handleAnswer}>YES</button>
+          <button className ="answer-button" id="idk" value="idk" onClick={handleAnswer}>DON'T KNOW</button>
+          <button className ="answer-button" id="no" value="no" onClick={handleAnswer}>NO</button>
+          <button id="stop-button" onClick={handleStopButton}>Can we just stop? I don't want to play anymore..</button>
         </div>
     )
-}
 }
 
 export default App;

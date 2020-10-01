@@ -5,12 +5,11 @@ import App from './App';
 import './App.css';
 
 
+
 const TitlePage = () => {
     const navigateToTheApp = () => {
         ReactDOM.render(
-            <React.StrictMode>
-                <App />
-            </React.StrictMode>,
+                <App />,
             document.getElementById('root')
         );
     }

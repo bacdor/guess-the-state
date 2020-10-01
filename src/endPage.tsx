@@ -7,9 +7,7 @@ import TitlePage from './titlePage';
 const EndPage = (output: JSX.Element) => {
     const navigateToTheTitlePage = () => {
         ReactDOM.render(
-            <React.StrictMode>
-                <TitlePage />
-            </React.StrictMode>,
+            <TitlePage />,
             document.getElementById('root')
         );
     }
