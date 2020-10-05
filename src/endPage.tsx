@@ -1,21 +1,22 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './index.css';
-import TitlePage from './titlePage';
 
+interface LocationState {
+    output: string | HTMLElement ;
+}
 
-const EndPage = (output: JSX.Element) => {
-    const navigateToTheTitlePage = () => {
-        ReactDOM.render(
-            <TitlePage />,
-            document.getElementById('root')
-        );
-    }
+const EndPage = () => {
+    const location = useLocation<LocationState>();
+
+    const output = location.state.output;
 
     return (
         <div className="content" id="end-content">
-            <h2 id="output">{output.props}</h2>
-            <button id="finish-game1" onClick={navigateToTheTitlePage}>That was fun, thank you! Take me back to the title page please.</button>
+            <h2 id="output">{output}</h2>
+            <Link to="/homePage" id="finish-link" className="route-link">
+                That was fun, thank you! Take me back to the title page please.
+            </Link>
         </div>
     )
 };

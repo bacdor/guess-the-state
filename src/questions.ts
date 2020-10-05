@@ -29,6 +29,8 @@ const questions: IQuestions[] = [
         quest: "is10Millions"},
     {name: "Is bordering Tennessee?",
         quest: "isTennesseeBordering"},
+    {name: "Does touch at least one of the Great Lakes?",
+        quest: "IsOnGreatLakes"}
 ];
 
 export default questions;
