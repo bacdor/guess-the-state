@@ -7,7 +7,7 @@ import './index.css';
 
 
 const App = () => {
-  const [statesList, setStatesList] =
+  const [stateNameList, setStateNameList] =
       useState(states.map(value => (value.name)));
   const [questionsList, setQuestionsList] =
       useState(questions.map(value => ({name: value.name, quest: value.quest})))
@@ -20,44 +20,40 @@ const App = () => {
 
   useEffect(() => {
 
-      console.log(statesList)
+      console.log(stateNameList)
       console.log(questionIndex)
-      //czy mogę zostawić tu tego leta? Czy tu też lepiej zmienić ?
-    //Chodzi o to, ze jeśli wrzucę go do consta modyfikowanego przy pomocy
-    //setState, to wtedy muszę go updatować w tym useEffect a to tworzy mi
-    //nieskończoną pętlę albo fakt, że ten if* odpala mi się dopiero przy
-    //następnej modyfikacji w zależności od tego czy wrzucę do go listy
-    //argumentów na który czuły jest useEffect
-      let output: string | HTMLElement = ""
 
-      if (statesList.length === 1) {
-        output = `I know!!! It's \r ${statesList[0]}`.toUpperCase();
-      } else if (doNotKnowCounter >= 3) {
-         output = "---IT SEEMS LIKE YOU DON'T REALLY KNOW YOUR STATE---"
-      } else if (questionsList.length === 0) {
-        output = "---QUESTIONS OUT OF STOCK---";
-      } else if (statesList.length === 0) {
-        output = "---THERE IS NO STATE THAT MATCHES YOUR ANSWERS---"
-      }
-      //*ten if
-      if (output !== "") {
-          history.push("/endPage", { output: output});
+      const getOutputMessage = (): string | HTMLElement => {
+          if (stateNameList.length === 1) {
+              return `I know!!! It's \r ${stateNameList[0]}.toUpperCase()`;
+          } else if (doNotKnowCounter >= 3) {
+              return "---IT SEEMS LIKE YOU DON'T REALLY KNOW YOUR STATE---";
+          } else if (questionsList.length === 0) {
+              return "---QUESTIONS OUT OF STOCK---";
+          } else if (stateNameList.length === 0) {
+              return "---THERE IS NO STATE THAT MATCHES YOUR ANSWERS---";
+          }
+          return "";
       }
 
-  }, [statesList, doNotKnowCounter,]);
+      if (getOutputMessage() !== "") {
+          history.push("/endPage", { output: getOutputMessage});
+      }
+
+  }, [stateNameList, doNotKnowCounter,]);
 
 
   const handleAnswer = (event: React.MouseEvent<HTMLElement>) => {
 
       //YES answer
       if ((event.target as any).value === "yes") {
-        setStatesList(statesList.filter((value) =>
+          setStateNameList(stateNameList.filter((value) =>
             states[states.findIndex(element => element.name === value)]
                 [questionsList[questionIndex].quest]))
 
         //NO answer
       } else if ((event.target as any).value === "no") {
-        setStatesList(statesList.filter((value) =>
+          setStateNameList(stateNameList.filter((value) =>
             !states[states.findIndex(element => element.name === value)]
                 [questionsList[questionIndex].quest]))
 
@@ -88,4 +84,3 @@ const App = () => {
 }
 
 export default App;
-
