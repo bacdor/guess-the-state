@@ -22,7 +22,7 @@ const App = () => {
 
         const getOutputMessage = (): string | HTMLElement => {
             if (stateNameList.length === 1) {
-                return `I know!!! It's \r ${stateNameList[0]}.toUpperCase()`;
+                return `I know!!! It's \r ${stateNameList[0]}`.toUpperCase();
             } else if (doNotKnowCounter >= 3) {
                 return "---IT SEEMS LIKE YOU DON'T REALLY KNOW YOUR STATE---";
             } else if (questionsList.length === 0) {
