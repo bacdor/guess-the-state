@@ -30,7 +30,7 @@ const questions: IQuestions[] = [
     {name: "Is bordering Tennessee?",
         quest: "isTennesseeBordering"},
     {name: "Does touch at least one of the Great Lakes?",
-        quest: "IsOnGreatLakes"}
+        quest: "isOnGreatLakes"}
 ];
 
 export default questions;
